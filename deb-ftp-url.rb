@@ -4,7 +4,7 @@ require 'nokogiri'
 require 'open-uri'
 
 if ARGV.length == 0 || ARGV[0] == "-h" || ARGV[0] == "--help"
-    puts "usage: deb-ftp-url.rb libglib2.0-0 [jp] [armhf] [stretch]"
+    puts "usage: deb-dl.rb libglib2.0-0 [jp] [armhf] [stretch]"
     exit
 end
 
@@ -22,16 +22,29 @@ doc.css("#pdownload th a").each do |e|
     if sn == arch
         link = e['href']
         dl_url = "#{base_url}#{link}"
-        break
     end
 end
 
 if dl_url.nil?
-    STDERR.puts "url not found"
-    exit 1
+    STDERR.puts "arch '#{arch}' not found. retrying arch 'all'."
+
+    doc.css("#pdownload th a").each do |e|
+        sn = e.content
+        if sn == "all"
+            link = e['href']
+            dl_url = "#{base_url}#{link}"
+        end
+    end
+
+    if dl_url.nil?
+        STDERR.puts "arch 'all' not found. exits."
+        exit 1
+    end
 end
 
 doc = Nokogiri::HTML(URI.open(dl_url))
+
+dl_url = ""
 
 if arch == "_"
     doc.css(".cardleft a, .cardright a").each do |e|
@@ -41,14 +54,33 @@ if arch == "_"
         # puts "#{_s}: #{_url}"
         puts "#{_url}"
     end
+
+    exit
 else
     doc.css(".cardleft a, .cardright a").each do |e|
         _s = e.content
         link = e['href']
         _url = "#{link}"
         if _s =~ /#{region}/
-            puts "#{_url}"
+            dl_url = _url
+            # puts "#{_url}"
             break
         end
     end
 end
+
+if dl_url.nil? || dl_url.strip == ''
+    STDERR.puts "mirror #{region} not found. trying other."
+
+    dl_url = doc.css("#content a").map{|e|
+        _s = e.content
+        e['href']
+    }.filter{|u| u =~ /debian/ }.first
+
+    if dl_url.nil? || dl_url.strip == ''
+        STDERR.puts "mirror not found. exits."
+        exit 1
+    end
+end
+
+puts "#{dl_url}"
