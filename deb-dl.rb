@@ -26,8 +26,20 @@ doc.css("#pdownload th a").each do |e|
 end
 
 if dl_url.nil?
-    STDERR.puts "url not found"
-    exit 1
+    STDERR.puts "arch '#{arch}' not found. retrying arch 'all'."
+
+    doc.css("#pdownload th a").each do |e|
+        sn = e.content
+        if sn == "all"
+            link = e['href']
+            dl_url = "#{base_url}#{link}"
+        end
+    end
+
+    if dl_url.nil?
+        STDERR.puts "arch 'all' not found. exits."
+        exit 1
+    end
 end
 
 doc = Nokogiri::HTML(URI.open(dl_url))
