@@ -59,18 +59,16 @@ end
 
 if dl_url.nil? || dl_url.strip == ''
     STDERR.puts "mirror #{region} not found. trying other."
-end
 
-dl_url = doc.css("#content a").map{|e|
-    _s = e.content
-    e['href']
-}.filter{|u| u =~ /debian/ }.first
+    dl_url = doc.css("#content a").map{|e|
+        _s = e.content
+        e['href']
+    }.filter{|u| u =~ /debian/ }.first
 
-STDERR.puts "#{dl_url}"
-
-if dl_url.nil? || dl_url.strip == ''
-    STDERR.puts "mirror not found. exits."
-    exit 1
+    if dl_url.nil? || dl_url.strip == ''
+        STDERR.puts "mirror not found. exits."
+        exit 1
+    end
 end
 
 #puts "#{dl_url}"
@@ -86,3 +84,6 @@ URI.open(dl_url) do |c|
       out.write(c.read)
     end
 end
+
+
+puts "Downloaded: #{dl_url}"
