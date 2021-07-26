@@ -4,7 +4,7 @@ require 'nokogiri'
 require 'open-uri'
 
 if ARGV.length == 0 || ARGV[0] == "-h" || ARGV[0] == "--help"
-    puts "usage: deb-ftp-url.rb [jp] [armhf] [stretch]"
+    puts "usage: deb-ftp-url.rb libglib2.0-0 [jp] [armhf] [stretch]"
     exit
 end
 
