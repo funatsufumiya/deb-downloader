@@ -22,6 +22,7 @@ doc.css("#pdownload th a").each do |e|
     if sn == arch
         link = e['href']
         dl_url = "#{base_url}#{link}"
+        break
     end
 end
 
@@ -47,6 +48,7 @@ else
         _url = "#{link}"
         if _s =~ /#{region}/
             puts "#{_url}"
+            break
         end
     end
 end
