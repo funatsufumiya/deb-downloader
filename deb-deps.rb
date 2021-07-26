@@ -23,7 +23,8 @@ list = doc.css("#pdeps span.nonvisual + a").map do |e|
     end
 end
 
-list.reject!{ |x| x.nil? }.uniq!
+#p list
+list = list.filter{ |x| !x.nil? }.uniq
 
 list.each do |e|
     puts e
