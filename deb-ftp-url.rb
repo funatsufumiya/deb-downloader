@@ -3,6 +3,11 @@
 require 'nokogiri'
 require 'open-uri'
 
+if ARGV.length == 0 || ARGV[0] == "-h" || ARGV[0] == "--help"
+    puts "usage: deb-ftp-url.rb [jp] [armhf] [stretch]"
+    exit
+end
+
 s = ARGV[0]
 region = ARGV[1] || "jp"
 arch = ARGV[2] || "armhf"
